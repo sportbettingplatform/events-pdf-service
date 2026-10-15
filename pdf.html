@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+    <title>{{ title }}</title>
+</head>
+<style type="text/css">
+    body {
+        margin: 0;
+        padding-left: 10%;
+        padding-right: 10%;
+        font-family: sans-serif;
+    }
+
+    .mainTable {
+        /* width: 100%;
+        border: solid 1px lightslategray;
+        font-family: sans-serif;
+        font-size: 10pt;
+        text-align: left;
+        vertical-align: top; */
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        /* min-width: 400px; */
+        width: 100%;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .mainTable thead tr {
+        background-color: #52b5ff;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .mainTable th,
+    .mainTable td {
+        padding: 12px 15px;
+        width: 10px;
+    }
+
+    .mainTable tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .mainTable tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .mainTable tbody tr:last-of-type {
+        border-bottom: 2px solid #52b5ff;
+    }
+
+    td {
+        border-right: 1px solid rgb(207, 207, 207);
+    }
+
+    /* td,
+    th {
+      padding: 5px;
+    } */
+
+    a {
+        color: black;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: rgb(158, 209, 226);
+        text-decoration: underline;
+    }
+
+    button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #load-doc-error-message {
+        background-color: #ffdddd; /* Light red */
+        border: 1px solid #ff0000;
+        color: #ff0000;
+        font-size: 11px;
+        padding: 12px 10px;
+        display: block;
+        line-height: 20px;
+    }
+
+</style>
+<body>
+<h2 style="display: flex; justify-content: space-between">
+    <span>DOPUNE / LISTE</span>
+    <div style="display: flex; gap: 5px;">
+        <div id="load-doc-error-message" style="display: none;"></div>
+        <button onclick="loadDoc()">Preuzmi terminsku</button>
+    </div>
+</h2>
+<form>
+    <table class="mainTable" cellspacing="0">
+        <tbody>
+        <thead>
+        <tr>
+            <th class="header">Ime datoteke</th>
+            <th class="header">Veličina</th>
+            <th class="header">Vreme unosa</th>
+        </tr>
+        </thead>
+       {% for pdf in pdf_list %}
+        <tr>
+            <td><a href="https://dopune.betroyal.casino/files/{{ escape(pdf['name']) }}">{{ escape(pdf['name']) }}</a></td>
+            <td>{{ escape(pdf['size']) }}</td>
+            <td>{{ escape(pdf['created']) }}</td>
+        </tr>
+       {% end %}
+        </tbody>
+    </table>
+</form>
+<div id="copyright"></div>
+
+<script>
+  const paragraph = `
+  <p>
+    Copyright &copy; ${new Date().getFullYear()} premierbet.me
+  </p>`;
+
+  document.getElementById('copyright').innerHTML = paragraph;
+
+
+  function loadDoc() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+          if (this.readyState == 4) { // Check only after request is complete
+              if (this.status == 200) {
+                  // Success: Check if response contains a URL
+                  var response = JSON.parse(this.responseText); // Assuming JSON response
+                  if (response.hasOwnProperty("data")) {
+                      // Open URL in new tab if present
+                      document.getElementById("load-doc-error-message").style.display = "none";
+                      window.open(response.data, '_blank');
+                  } else {
+                      // No URL found, display success message (optional)
+                      document.getElementById("load-doc-error-message").innerHTML = "Molimo vas pokusajte kasnije!";
+                      document.getElementById("load-doc-error-message").style.display = "block";
+                  }
+              } else {
+                  // Error: Show error message
+                  document.getElementById("load-doc-error-message").innerHTML = "Molimo vas pokusajte kasnije!";
+                  document.getElementById("load-doc-error-message").style.display = "block";
+              }
+          }
+      };
+
+      xhttp.open("GET", "https://betroyal.casino/api/events/generate-daily-events-excel-pdf-football", true);
+      xhttp.send();
+  }
+</script>
+</body>
+</html>

@@ -122,10 +122,11 @@ function getMarketPatterns(sport: string): MarketGroup[] {
 function createMarketGroups(sport: string, headers: string[]): MarketGroup[] {
   const patterns = getMarketPatterns(sport);
   const groups: MarketGroup[] = [];
+  const findPattern = (start: number) => patterns.find(candidate => headersMatch(headers, start, candidate.headers));
   let index = 0;
 
   while (index < headers.length) {
-    const pattern = patterns.find((candidate) => headersMatch(headers, index, candidate.headers));
+    const pattern = findPattern(index);
 
     if (pattern) {
       groups.push(pattern);
@@ -137,7 +138,7 @@ function createMarketGroups(sport: string, headers: string[]): MarketGroup[] {
 
     while (
       index < headers.length &&
-      !patterns.some((candidate) => headersMatch(headers, index, candidate.headers))
+      !findPattern(index)
     ) {
       unknownHeaders.push(headers[index]);
       index += 1;

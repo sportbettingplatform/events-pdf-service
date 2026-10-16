@@ -1,8 +1,8 @@
 export type Translations = Record<string, string>
 
 export async function loadPdfTranslations(): Promise<Translations> {
-  const base = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '')
-  const locale = import.meta.env.VITE_PDF_LOCALE || 'cg'
+  const base = (process.env.REACT_APP_API_BASE_URL ?? '').replace(/\/+$/, '')
+  const locale = process.env.REACT_APP_PDF_LOCALE || 'cg'
   const response = await fetch(`${base}/vc/api/static/i18n?groups=GENERAL,BETS,BET_GROUPS&locale=${encodeURIComponent(locale)}`, {
     signal: AbortSignal.timeout(30_000),
   })

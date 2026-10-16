@@ -1,1 +1,1 @@
-# events-pdf-service-react
+# events-pdf-service-cra

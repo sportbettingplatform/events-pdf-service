@@ -1,7 +1,7 @@
 export type ListType = 1 | 2
 
 export async function generateDailyEvents(type: ListType): Promise<unknown> {
-  const base = (import.meta.env.VITE_API_BASE_URL ?? '').trim().replace(/\/+$/, '')
+  const base = (process.env.REACT_APP_API_BASE_URL ?? '').trim().replace(/\/+$/, '')
   let response: Response
   try {
     response = await fetch(`${base}/api/events/generate_daily_events/${type}`, {
